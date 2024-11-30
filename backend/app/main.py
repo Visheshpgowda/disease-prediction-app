@@ -1,22 +1,48 @@
 from flask import Flask, request, jsonify
-import pickle
-import numpy as np
 from flask_cors import CORS
+import numpy as np
+import pickle
+import os
 
-# Load the trained model
-# model_path = r'C:/Users/vish/OneDrive/Desktop/4thsem/disease-prediction-app/backend/app/pickle_files/heart_model_pickle.pkl'
-# print(f"Trying to open file: {model_path}")
 
-with open('C:/Users/vishe/OneDrive/Desktop/4thsem/disease-prediction-app/backend/app/pickle_files/heart_model_pickle.pkl', 'rb') as file:
+MODEL_PATH = os.path.join('C:/Users/vishe/OneDrive/Desktop/4thsem/disease-prediction-app/backend/app/pickle_files', 'heart_model_pickle.pkl')
+
+
+with open(MODEL_PATH, 'rb') as file:
     model = pickle.load(file)
 
 
 app = Flask(__name__)
-CORS(app)  # Allow CORS for all routes
+CORS(app)
 
-@app.route('/')
-def home():
-    return "Welcome to the Model API"
+
+COLUMNS = [
+    'WeightInKilograms', 'BMI', 'HadAngina', 'HadCOPD', 'HadKidneyDisease',
+    'DifficultyConcentrating', 'DifficultyWalking', 'ChestScan',
+    'AlcoholDrinkers', 'CovidPos', 'HeighInFeet', 'GeneralHealth_Excellent',
+    'GeneralHealth_Fair', 'GeneralHealth_Good', 'GeneralHealth_Poor',
+    'GeneralHealth_Very good', 'Sex_Female', 'Sex_Male',
+    'SmokerStatus_Former smoker', 'SmokerStatus_Never smoked',
+    'SmokerStatus_smokes', 'AgeCategory_0-9', 'AgeCategory_10-19',
+    'AgeCategory_20-24', 'AgeCategory_25-59', 'AgeCategory_60 or older'
+]
+
+
+SCALES = {
+    'WeightInKilograms': (30, 200),  
+    'BMI': (10, 50),                 
+    'HeighInFeet': (4, 7)            
+}
+
+
+GENERAL_HEALTH = ['Excellent', 'Fair', 'Good', 'Poor', 'Very good']
+SEX = ['Female', 'Male']
+SMOKER_STATUS = ['Former smoker', 'Never smoked', 'smokes']
+AGE_CATEGORY = ['0-9', '10-19', '20-24', '25-59', '60 or older']
+
+
+def scale_value(value, min_val, max_val):
+    return (value - min_val) / (max_val - min_val)
 @app.route("/predictStroke", methods=["POST"])
 def predict():
     # Get input data from frontend (user data)
@@ -51,24 +77,75 @@ def predict():
     # Return the prediction as JSON
     print(prediction_label, prediction[0])
     return jsonify({"prediction": prediction_label, "probability": float(prediction[0])})
-@app.route('/predict', methods=['POST'])
+def predict_disease(data):
+    try:
+       
+        features = []
+
+       
+        for col in ['WeightInKilograms', 'BMI', 'HeighInFeet']:
+            min_val, max_val = SCALES[col]
+            scaled_value = scale_value(data[col], min_val, max_val)
+            features.append(scaled_value)
+
+        
+        for col in ['HadAngina', 'HadCOPD', 'HadKidneyDisease',
+                    'DifficultyConcentrating', 'DifficultyWalking', 'ChestScan',
+                    'AlcoholDrinkers', 'CovidPos']:
+            features.append(data[col])
+
+        
+        general_health_onehot = [1 if data['GeneralHealth'] == category else 0 for category in GENERAL_HEALTH]
+        features.extend(general_health_onehot)
+
+       
+        sex_onehot = [1 if data['Sex'] == category else 0 for category in SEX]
+        features.extend(sex_onehot)
+
+        
+        smoker_status_onehot = [1 if data['SmokerStatus'] == category else 0 for category in SMOKER_STATUS]
+        features.extend(smoker_status_onehot)
+
+        
+        age_category_onehot = [1 if data['AgeCategory'] == category else 0 for category in AGE_CATEGORY]
+        features.extend(age_category_onehot)
+
+       
+        if len(features) != len(COLUMNS):
+            return {'error': f'Input data shape mismatch. Expected {len(COLUMNS)} features, got {len(features)}'}
+
+        
+        features = np.array(features).reshape(1, -1)
+
+        
+        probability = model.predict(features)[0]  
+
+       
+        return {
+            'prediction': int(probability > 0.5),  
+            'probability': float(probability)  
+        }
+
+    except Exception as e:
+        return {'error': str(e)}
+
+@app.route('/')
+def home():
+    return "Welcome to the Disease Prediction API!"
+
+@app.route('/heartpredict', methods=['POST'])
 def predict():
     try:
-        # Get the input data from the request (ensure it's in the correct format)
+      
         data = request.get_json()
 
-        # Ensure the 'features' key is in the data
-        if 'features' not in data:
-            return jsonify({'error': 'Features not provided'}), 400
+        
+        result = predict_disease(data)
 
-        # Assuming your model takes an array of features (e.g., [feature1, feature2, ...])
-        features = np.array(data['features']).reshape(1, -1)  # Reshape if needed
+        if 'error' in result:
+            return jsonify(result), 400
 
-        # Predict using the loaded model
-        prediction = model.predict(features)
-
-        # Return the prediction result
-        return jsonify({'prediction': prediction.tolist()})  # Convert ndarray to list
+        return jsonify(result)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
