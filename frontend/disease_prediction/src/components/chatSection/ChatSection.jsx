@@ -50,7 +50,7 @@ const ChatSection = () => {
                     Converse with Your Virtual Assistant
                 </div>
             </div>
-            <div className='relative h-[610px] overflow-scroll '>
+            <div className='relative sm:h-[610px] h-[600px]   overflow-scroll '>
                 <div className="mt-10 mb-10 overflow-auto" id='chat-center'>
                     {messages.map((msg, index) => (
                         <div key={index} className={`chat ${msg.type === 'user' ? 'chat-end' : 'chat-start'}`}>
@@ -64,11 +64,11 @@ const ChatSection = () => {
                 </div>
             </div>
 
-            <div className='flex absolute bottom-0 z-3 mb-[1px] '>
+            <div className='flex absolute lg:bottom-0  z-3 mb-[1px] sm:ml-0 ml-8  '>
                 <input
                     type="text"
                     placeholder='Enter your message'
-                    className='bottom-10 p-3 w-[610px] rounded-l-lg rounded-r-0 bg-white border text-black'
+                    className='bottom-10 p-3 sm:w-[610px] md:ml-14  sm:ml-12  md:w-[500px]  rounded-l-lg rounded-r-0 bg-white border text-black'
                     value={userMessage}
                     onChange={(e) => setUserMessage(e.target.value)}
                 />
