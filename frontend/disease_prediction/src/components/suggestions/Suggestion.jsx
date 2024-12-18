@@ -23,7 +23,7 @@ function Suggestion() {
     }, []);
 
     return (
-        <div>
+        <div className=''>
             <div className='flex items-center justify-center mt-3'>
                 <div className='text-2xl font-semibold text-center  font-sans border-2 border-t-0 border-l-0 border-r-0 border-slate-200 shadow-md shadow-slate-400  p-3 text-black w-[80%]'>Suggestions</div>
             </div>
