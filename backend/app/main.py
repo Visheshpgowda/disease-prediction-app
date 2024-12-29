@@ -114,7 +114,8 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from utils.heart_model import predict_disease  # Use the function from utils
+from utils.heart_model import predict_disease_heart  # Use the function from utils
+from utils.diabetes_util import predict_disease_diabetes
 
 app = Flask(__name__)
 CORS(app)
@@ -140,7 +141,7 @@ def predict():
         #     return jsonify({'error': 'Missing required keys in input data'}), 400
 
         # Get prediction result
-        heart_result = predict_disease(data)
+        heart_result = predict_disease_heart(data)
 
         # Check for errors
         if 'error' in heart_result:
@@ -150,6 +151,37 @@ def predict():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/diabetespredict', methods=['POST'])
+def diabetes_predict():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        
+        diabetes_result = predict_disease_diabetes(data)
+        if 'error' in diabetes_result:
+            return diabetes_result, 400
+
+        return diabetes_result
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/diabetespredict', methods=['POST'])
+def diabetes_predict():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+
+        # Call the prediction function
+        result = predict_disease_diabetes(data)
+
+        # Return the result as a Response object
+        return result
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)

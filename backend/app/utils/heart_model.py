@@ -5,8 +5,10 @@ import pickle
 import os
 
 
-MODEL_PATH = os.path.join('C:/Users/vishe/OneDrive/Desktop/4thsem/disease-prediction-app/backend/app/pickle_files', 'heart_model_pickle.pkl')
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
+
+MODEL_PATH = os.path.join(current_dir, '../pickle_files', 'heart_model_pickle.pkl') 
 
 with open(MODEL_PATH, 'rb') as file:
     model = pickle.load(file)
@@ -71,7 +73,7 @@ AGE_CATEGORY = ['0-9', '10-19', '20-24', '25-59', '60 or older']
 def scale_value(value, min_val, max_val):
     return (value - min_val) / (max_val - min_val)
 
-def predict_disease(data):
+def predict_disease_heart(data):
     try:
         features = []
 
