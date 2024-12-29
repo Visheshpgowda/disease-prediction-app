@@ -3,17 +3,22 @@ from flask_cors import CORS
 import numpy as np
 import pickle
 import os
+import os
 
 
-MODEL_PATH = os.path.join('C:/Users/vishe/OneDrive/Desktop/4thsem/disease-prediction-app/backend/app/pickle_files', 'heart_model_pickle.pkl')
+MODEL_PATH = os.path.join(r'pickle_files', 'heart_model_pickle.pkl')
 
 
-with open(MODEL_PATH, 'rb') as file:
-    model = pickle.load(file)
+if not os.path.exists(MODEL_PATH):
+    print("Model file not found at:", MODEL_PATH)
+else:
+    with open(MODEL_PATH, 'rb') as file:
+        model = pickle.load(file)
+
+# with open(MODEL_PATH, 'rb') as file:
+#     model = pickle.load(file)
 
 
-app = Flask(__name__)
-CORS(app)
 
 feature_order = [
     'WeightInKilograms',
