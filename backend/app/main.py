@@ -152,20 +152,6 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/diabetespredict', methods=['POST'])
-def diabetes_predict():
-    try:
-        # Get JSON data from the request
-        data = request.get_json()
-        
-        diabetes_result = predict_disease_diabetes(data)
-        if 'error' in diabetes_result:
-            return diabetes_result, 400
-
-        return diabetes_result
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/diabetespredict', methods=['POST'])
 def diabetes_predict():
