@@ -3,6 +3,7 @@ from flask_cors import CORS
 import numpy as np
 import pickle
 import os
+import os
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,8 +15,6 @@ with open(MODEL_PATH, 'rb') as file:
     model = pickle.load(file)
 
 
-app = Flask(__name__)
-CORS(app)
 
 feature_order = [
     'WeightInKilograms',
@@ -91,13 +90,17 @@ def predict_disease_heart(data):
                     'AlcoholDrinkers', 'CovidPos']:
             if col not in data:
                 raise ValueError(f"Missing value for feature: {col}")
-            features.append(data[col])
+            if data[col]=="Yes":
+                features.append(1)
+            else:
+                features.append(0)
+        
 
         
         general_health_onehot = [1 if data.get('GeneralHealth') == category else 0 for category in GENERAL_HEALTH]
         features.extend(general_health_onehot)
 
-        sex_onehot = [1 if data.get('Sex') == category else 0 for category in SEX]
+        sex_onehot = [1 if data.get('gender') == category else 0 for category in SEX]
         features.extend(sex_onehot)
 
         smoker_status_onehot = [1 if data.get('SmokerStatus') == category else 0 for category in SMOKER_STATUS]
