@@ -21,22 +21,22 @@ def home():
 
 
 # cols on which the model is trained, diabetes is the y variable
-COLUMNS = [
-    "gender", 
-    "hypertension", 
-    "heart_disease", 
-    "bmi", 
-    "HbA1c_level", 
-    "blood_glucose_level",  
-    "AgeCategory_0-9", 
-    "AgeCategory_10-19", 
-    "AgeCategory_20-24", 
-    "AgeCategory_25-59", 
-    "AgeCategory_60 or older", 
-    "Never smoked", 
-    "smokes", 
-    "Former smoker"
-]
+# COLUMNS = [
+#     "gender", 
+#     "hypertension", 
+#     "heart_disease", 
+#     "bmi", 
+#     "HbA1c_level", 
+#     "blood_glucose_level",  
+#     "AgeCategory_0-9", 
+#     "AgeCategory_10-19", 
+#     "AgeCategory_20-24", 
+#     "AgeCategory_25-59", 
+#     "AgeCategory_60 or older", 
+#     "Never smoked", 
+#     "smokes", 
+#     "Former smoker"
+# ]
 
 
 @app.route('/')
@@ -52,16 +52,16 @@ def predict_disease_diabetes(data):
         features = []
 
         # Gender
-        features.append(1 if data.get("gender") == "Male" else 0)
+        features.append(1 if data.get("Gender") == "Male" else 0)
 
         # Hypertension
-        features.append(1 if data.get("hypertension") == "Yes" else 0)
+        features.append(1 if data.get("Hypertension") == "Yes" else 0)
 
         # Heart Disease
-        features.append(1 if data.get("heart_disease") == "Yes" else 0)
+        features.append(1 if data.get("HeartDisease") == "Yes" else 0)
 
         # BMI
-        features.append(float(data.get("bmi")))
+        features.append(float(data.get("BMI")))
 
         # HbA1c Level
         features.append(float(data.get("HbA1c_level")))
@@ -70,13 +70,13 @@ def predict_disease_diabetes(data):
         features.append(int(data.get("blood_glucose_level")))
 
         # Age Category (One-Hot Encoding)
-        age_category = data.get("age_category")
+        age_category = data.get("AgeCategory")
         age_categories = ["0-9", "10-19", "20-24", "25-59", "60 or older"]
         for cat in age_categories:
             features.append(1 if age_category == cat else 0)
 
         # Smoker Status (One-Hot Encoding)
-        smoker_status = data.get("smoker_status")
+        smoker_status = data.get("SmokerStatus")
         smoker_categories = ["Never smoked", "smokes", "Former smoker"]
         for status in smoker_categories:
             features.append(1 if smoker_status == status else 0)

@@ -78,7 +78,7 @@ def predict_disease_stroke(data):
             features.append(1 if age_category == category else 0)
 
         # Smoking Status (One-Hot Encoding)
-        smoking_status = data.get("smoking_status")
+        smoking_status = data.get("smokerStatus")
         smoking_categories = ["Never smoked", "smokes", "Former smoker"]
         for category in smoking_categories:
             features.append(1 if smoking_status == category else 0)
