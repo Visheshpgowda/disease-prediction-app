@@ -3,50 +3,52 @@ import React, { useState } from 'react';
 const Predict = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({});
+    const [errors, setErrors] = useState({});
 
-    // Group related fields together
     const formFields = {
         1: [
-            { name: 'name', label: 'Name', type: 'text' },
-            { name: 'age', label: 'Age', type: 'number' },
-            { name: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'] },
-            { name: 'occupation', label: 'Occupation', type: 'text' },
-            { name: 'experience', label: 'Years of Experience', type: 'number' }
+            { name: "Gender", label: "Gender", type: "select", options: ["Male", "Female"] },
+            {
+                name: "AgeCategory", label: "Age Category", type: "select",
+                options: ["0-9", "10-19", "20-24", "25-59", "60 or older"]
+            },
+            {
+                name: "ETHNICITY", label: "Ethnicity", type: "select",
+                options: ["Caucasian", "African American", "Asian", "Other"]
+            },
+            { name: "WeightInKilograms", label: "Weight (kg)", type: "number" },
+            { name: "HeightInFeet", label: "Height (ft)", type: "number" }
         ],
         2: [
-            { name: 'education', label: 'Education Level', type: 'select', options: ['High School', 'Bachelor', 'Master', 'PhD'] },
-            { name: 'field', label: 'Field of Study', type: 'text' },
-            { name: 'skills', label: 'Technical Skills', type: 'text' },
-            { name: 'certifications', label: 'Certifications', type: 'text' },
-            { name: 'languages', label: 'Programming Languages', type: 'text' }
+            { name: "BMI", label: "BMI", type: "number" },
+            { name: "BloodGlucoseLevel", label: "Blood Glucose Level", type: "number" },
+            { name: "HbA1cLevel", label: "HbA1c Level", type: "number" },
+            { name: "ChestScan", label: "Chest Scan", type: "select", options: ["Yes", "No"] },
+            {
+                name: "GeneralHealth", label: "General Health", type: "select",
+                options: ["Excellent", "Very good", "Good", "Fair", "Poor"]
+            }
         ],
         3: [
-            { name: 'projectType', label: 'Project Type', type: 'select', options: ['Classification', 'Regression', 'Clustering', 'NLP', 'Computer Vision'] },
-            { name: 'dataSize', label: 'Expected Data Size', type: 'text' },
-            { name: 'framework', label: 'Preferred Framework', type: 'select', options: ['TensorFlow', 'PyTorch', 'Scikit-learn', 'Other'] },
-            { name: 'hardware', label: 'Available Hardware', type: 'text' },
-            { name: 'timeline', label: 'Project Timeline (months)', type: 'number' }
+            { name: "SmokingStatus", label: "Smoking Status", type: "select", options: ["Current", "Former", "Never"] },
+            { name: "AlcoholConsumption", label: "Alcohol Consumption", type: "select", options: ["Yes", "No"] },
+            { name: "PhysicalActivity", label: "Physical Activity (hours/week)", type: "number" }
         ],
         4: [
-            { name: 'objective', label: 'Project Objective', type: 'textarea' },
-            { name: 'constraints', label: 'Project Constraints', type: 'textarea' },
-            { name: 'success', label: 'Success Metrics', type: 'textarea' },
-            { name: 'challenges', label: 'Expected Challenges', type: 'textarea' },
-            { name: 'requirements', label: 'Special Requirements', type: 'textarea' }
+            { name: "SleepHours", label: "Sleep Hours (per night)", type: "number" },
+            { name: "DietType", label: "Diet Type", type: "select", options: ["Vegetarian", "Non-Vegetarian", "Vegan"] }
         ],
         5: [
-            { name: 'budget', label: 'Project Budget', type: 'number' },
-            { name: 'team', label: 'Team Size', type: 'number' },
-            { name: 'deadline', label: 'Project Deadline', type: 'date' },
-            { name: 'updates', label: 'Update Frequency', type: 'select', options: ['Daily', 'Weekly', 'Bi-weekly', 'Monthly'] },
-            { name: 'stakeholders', label: 'Key Stakeholders', type: 'text' }
+            { name: "PollutionExposure", label: "Pollution Exposure", type: "select", options: ["Low", "Moderate", "High"] },
+            { name: "HousingCondition", label: "Housing Condition", type: "select", options: ["Good", "Average", "Poor"] }
         ],
         6: [
-            { name: 'dataSources', label: 'Data Sources', type: 'textarea' },
-            { name: 'preprocessing', label: 'Data Preprocessing Needs', type: 'textarea' },
-            { name: 'validation', label: 'Validation Method', type: 'select', options: ['Cross-validation', 'Hold-out', 'Time-series split'] },
-            { name: 'deployment', label: 'Deployment Environment', type: 'text' },
-            { name: 'maintenance', label: 'Maintenance Plan', type: 'textarea' }
+            { name: "SymptomDuration", label: "Symptom Duration (days)", type: "number" },
+            { name: "PainSeverity", label: "Pain Severity", type: "select", options: ["None", "Mild", "Moderate", "Severe"] }
+        ],
+        7: [
+            { name: "FamilySupport", label: "Family Support", type: "select", options: ["Excellent", "Good", "Fair", "Poor"] },
+            { name: "EconomicStatus", label: "Economic Status", type: "select", options: ["High", "Medium", "Low"] }
         ]
     };
 
@@ -57,15 +59,28 @@ const Predict = () => {
             ...formData,
             [e.target.name]: e.target.value
         });
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [e.target.name]: ""
+        }));
     };
 
-    const handleSubmit = () => {
-        console.log('Submitted data:', formData);
-        // Handle form submission
+    const validateFields = () => {
+        const currentFields = formFields[step];
+        const newErrors = {};
+
+        currentFields.forEach((field) => {
+            if (!formData[field.name]) {
+                newErrors[field.name] = `${field.label} is required.`;
+            }
+        });
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const nextStep = () => {
-        if (step < totalSteps) {
+        if (validateFields()) {
             setStep(step + 1);
         }
     };
@@ -76,93 +91,98 @@ const Predict = () => {
         }
     };
 
-    const progress = (step / totalSteps) * 100;
+    const handleSubmit = () => {
+        if (validateFields()) {
+            console.log('Submitted data:', formData);
+            alert("Form submitted successfully!");
+        }
+    };
+
+    const getStepColor = (stepNumber) => {
+        if (stepNumber < step) return "step-primary";
+        if (stepNumber === step) return "step-primary";
+        return "";
+    };
 
     return (
-        <div className="form-container max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-            <div className="form-header mb-6">
-                <h2 className="text-xl font-bold mb-4 text-black">
-                    Step {step}/{totalSteps}
-                </h2>
-                <div className="progress-bar w-full h-2 bg-gray-200 rounded">
-                    <div
-                        className="h-full bg-blue-500 rounded transition-all duration-300"
-                        style={{ width: `${progress}%` }}
-                    />
+        <div className="card w-full bg-base-100 shadow-xl">
+            <div className="card-body">
+                <ul className="steps steps-horizontal w-full mb-8">
+                    {Object.keys(formFields).map((stepNum) => (
+                        <li
+                            key={stepNum}
+                            className={`step ${getStepColor(parseInt(stepNum))}`}
+                            data-content={stepNum}
+                        >
+                            Step {stepNum}
+                        </li>
+                    ))}
+                </ul>
+
+                <h2 className="card-title text-2xl mb-6">Step {step}</h2>
+
+                <div className="space-y-4">
+                    {formFields[step].map((field) => (
+                        <div key={field.name} className="form-control w-full">
+                            <label className="label">
+                                <span className="label-text">{field.label}</span>
+                            </label>
+                            {field.type === 'select' ? (
+                                <select
+                                    name={field.name}
+                                    onChange={handleInputChange}
+                                    value={formData[field.name] || ''}
+                                    className="select select-bordered w-full"
+                                >
+                                    <option value="">Select {field.label}</option>
+                                    {field.options.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <input
+                                    type={field.type}
+                                    name={field.name}
+                                    onChange={handleInputChange}
+                                    value={formData[field.name] || ''}
+                                    className="input input-bordered w-full"
+                                    placeholder={`Enter ${field.label}`}
+                                />
+                            )}
+                            {errors[field.name] && (
+                                <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
+                            )}
+                        </div>
+                    ))}
                 </div>
-            </div>
 
-            <div className="form-content space-y-4">
-                {formFields[step].map((field) => (
-                    <div key={field.name} className="form-field mb-4">
-                        <label className="block text-sm font-medium text-black mb-2">
-                            {field.label}
-                        </label>
-                        {field.type === 'select' ? (
-                            <select
-                                name={field.name}
-                                onChange={handleInputChange}
-                                value={formData[field.name] || ''}
-                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
-                            >
-                                <option value="">Select {field.label}</option>
-                                {field.options.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
-                        ) : field.type === 'textarea' ? (
-                            <textarea
-                                name={field.name}
-                                onChange={handleInputChange}
-                                value={formData[field.name] || ''}
-                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
-                                rows={3}
-                            />
-                        ) : (
-                            <input
-                                type={field.type}
-                                name={field.name}
-                                onChange={handleInputChange}
-                                value={formData[field.name] || ''}
-                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
-                            />
-                        )}
-                    </div>
-                ))}
-            </div>
-
-            <div className="form-footer flex justify-between mt-6">
-                <button
-                    onClick={prevStep}
-                    disabled={step === 1}
-                    className={`px-4 py-2 rounded ${step === 1
-                        ? 'bg-gray-300 cursor-not-allowed'
-                        : 'bg-white border border-gray-300 hover:bg-gray-50 text-black'
-                        } flex items-center`}
-                >
-                    <span className="mr-2">←</span>
-                    Previous
-                </button>
-
-                {step === totalSteps ? (
+                <div className="card-actions justify-between mt-6">
                     <button
-                        onClick={handleSubmit}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center"
+                        onClick={prevStep}
+                        disabled={step === 1}
+                        className="btn btn-outline"
                     >
-                        Submit
-                        <span className="ml-2">→</span>
+                        ← Previous
                     </button>
-                ) : (
-                    <button
-                        onClick={nextStep}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center"
-                    >
-                        Next
-                        <span className="ml-2">→</span>
-                    </button>
-                )}
+
+                    {step === totalSteps ? (
+                        <button
+                            onClick={handleSubmit}
+                            className="btn btn-primary"
+                        >
+                            Submit →
+                        </button>
+                    ) : (
+                        <button
+                            onClick={nextStep}
+                            className="btn btn-primary"
+                        >
+                            Next →
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
