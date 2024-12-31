@@ -64,7 +64,7 @@ def predict_asthma(data):
             sex = 1
         else:
             return {"error": "Invalid Sex"}, 400
-        features.append(scale_value(sex, 0, 1))
+        features.append((sex))
 
         # Label encoding for Ethnicity
         ethnicity = data.get('Ethnicity')
@@ -81,7 +81,7 @@ def predict_asthma(data):
             return {"error": "Invalid Ethnicity"}, 400
         in_val, max_val = SCALES['Ethnicity']
         scaled_value = scale_value(ethnicity_index, in_val, max_val)
-        features.append(scaled_value)
+        features.append(ethnicity_index)
 
         # BMI scaling
         bmi = data.get('BMI')
@@ -99,7 +99,7 @@ def predict_asthma(data):
             smoker_index = 1
         else:
             return {"error": "Invalid Smoker Status"}, 400
-        features.append(scale_value(smoker_index, 0, 1))
+        features.append((smoker_index))
 
         # Get continuous feature values
         for column in ['PhysicalActivity', 'SleepQuality', 'PollutionExposure', 'PollenExposure', 'DustExposure']:
@@ -113,7 +113,7 @@ def predict_asthma(data):
         # Add symptom features (binary)
         for symptom in ['PetAllergy','ShortnessOfBreath', 'ChestTightness', 'Coughing', 'NighttimeSymptoms', 'ExerciseInduced']:
             value = (1 if data.get(symptom) == "Yes" else 0)
-            features.append(scale_value(value, 0, 1))
+            features.append((value))
 
         # Feature count validation
         if len(features) != len(COLUMNS):
