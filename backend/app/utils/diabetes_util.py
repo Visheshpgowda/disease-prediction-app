@@ -39,9 +39,9 @@ def home():
 # ]
 
 
-@app.route('/')
-def hello():
-    return "Welcome to the Diabetes Prediction API!" 
+# @app.route('/')
+# def hello():
+#     return "Welcome to the Diabetes Prediction API!" 
 def predict_disease_diabetes(data):
     try: 
 
@@ -85,25 +85,25 @@ def predict_disease_diabetes(data):
         features = np.array(features).reshape(1, -1)
         prediction = model.predict(features)[0]  # Assuming binary classification
         probability = model.predict_proba(features)[0][1]
-        return jsonify({"prediction": int(prediction), "probability": float(probability)})
+        return {"prediction": int(prediction), "probability": float(probability)}
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return {"error": str(e)}, 500
 
-@app.route('/diabetespredict', methods=['POST'])
-def diabetes_predict():
-    try:
-        # Get JSON data from the request
-        data = request.get_json()
+# @app.route('/diabetespredict', methods=['POST'])
+# def diabetes_predict():
+#     try:
+#         # Get JSON data from the request
+#         data = request.get_json()
 
-        # Call the prediction function
-        result = predict_disease_diabetes(data)
+#         # Call the prediction function
+#         result = predict_disease_diabetes(data)
 
-        # Return the result as a Response object
-        return result
+#         # Return the result as a Response object
+#         return result
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
