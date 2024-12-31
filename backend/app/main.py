@@ -112,9 +112,11 @@
 #     except Exception as e:
 #         return {'error': str(e)}
 from flask import Flask, request, jsonify
-from flask_cors import CORS
-from utils.heart_model import predict_disease  # Use the function from utils
+from flask_cors import CORS 
 from utils.Asthma_model import predict_asthma  # Use the function from utils
+from utils.heart_model import predict_disease_heart  # Use the function from utils
+from utils.diabetes_util import predict_disease_diabetes
+from utils.stroke_util import predict_disease_stroke
 
 app = Flask(__name__)
 CORS(app)
@@ -123,33 +125,25 @@ CORS(app)
 def home():
     return "Welcome to the Disease Prediction API!"
 
-@app.route('/Astmapredict', methods=['POST'])
-def predict_asthma_route():
-    try:
-        # Get JSON data from the request
-        data = request.get_json()
-        print(len(data))
-        # Get prediction result
-        asthma_result = predict_asthma(data)
-        
-        # Check for errors in the result (if any)
-        if isinstance(asthma_result, dict) and 'error' in asthma_result:
-            return jsonify(asthma_result), 400
-
-        return jsonify(asthma_result)
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/heartpredict', methods=['POST'])
 def predict_heart_route():
     try:
         # Get JSON data from the request
         data = request.get_json()
 
-        # Get heart disease prediction result
-        heart_result = predict_disease(data)
-        
+        # Validate input data
+        # required_keys = [
+        #     "WeightInKilograms", "BMI", "HadAngina", "HadCOPD", 
+        #     "HadKidneyDisease", "DifficultyConcentrating", "DifficultyWalking", 
+        #     "ChestScan", "AlcoholDrinkers", "CovidPos", "HeighInFeet", 
+        #     "GeneralHealth", "Sex", "SmokerStatus", "AgeCategory"
+        # ]
+        # if not all(key in data for key in required_keys):
+        #     return jsonify({'error': 'Missing required keys in input data'}), 400
+
+        # Get prediction result
+        heart_result = predict_disease_heart(data)
+
         # Check for errors
         if 'error' in heart_result:
             return jsonify(heart_result), 400
@@ -158,6 +152,38 @@ def predict_heart_route():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/diabetespredict', methods=['POST'])
+def diabetes_predict():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+
+        # Call the prediction function
+        result = predict_disease_diabetes(data)
+
+        # Return the result as a Response object
+        return result
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/strokepredict', methods=['POST'])
+def stroke_predict():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+
+        # Call the prediction function
+        result = predict_disease_stroke(data)
+
+        # Return the result as a Response object
+        return result
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -6,17 +6,13 @@ import os
 import os
 
 
-MODEL_PATH = os.path.join(r'pickle_files', 'heart_model_pickle.pkl')
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-if not os.path.exists(MODEL_PATH):
-    print("Model file not found at:", MODEL_PATH)
-else:
-    with open(MODEL_PATH, 'rb') as file:
-        model = pickle.load(file)
+MODEL_PATH = os.path.join(current_dir, '../pickle_files', 'heart_model_pickle.pkl') 
 
-# with open(MODEL_PATH, 'rb') as file:
-#     model = pickle.load(file)
+with open(MODEL_PATH, 'rb') as file:
+    model = pickle.load(file)
 
 
 
@@ -76,7 +72,7 @@ AGE_CATEGORY = ['0-9', '10-19', '20-24', '25-59', '60 or older']
 def scale_value(value, min_val, max_val):
     return (value - min_val) / (max_val - min_val)
 
-def predict_disease(data):
+def predict_disease_heart(data):
     try:
         features = []
 
@@ -94,13 +90,17 @@ def predict_disease(data):
                     'AlcoholDrinkers', 'CovidPos']:
             if col not in data:
                 raise ValueError(f"Missing value for feature: {col}")
-            features.append(data[col])
+            if data[col]=="Yes":
+                features.append(1)
+            else:
+                features.append(0)
+        
 
         
         general_health_onehot = [1 if data.get('GeneralHealth') == category else 0 for category in GENERAL_HEALTH]
         features.extend(general_health_onehot)
 
-        sex_onehot = [1 if data.get('Sex') == category else 0 for category in SEX]
+        sex_onehot = [1 if data.get('gender') == category else 0 for category in SEX]
         features.extend(sex_onehot)
 
         smoker_status_onehot = [1 if data.get('SmokerStatus') == category else 0 for category in SMOKER_STATUS]

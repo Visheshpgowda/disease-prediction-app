@@ -58,9 +58,9 @@ def predict_asthma(data):
         features = []
 
         # One-hot encoding for Gender
-        if data['Sex'] == 'Male':
+        if data['gender'] == 'Male':
             sex = 0
-        elif data['Sex'] == 'Female':
+        elif data['gender'] == 'Female':
             sex = 1
         else:
             return {"error": "Invalid Sex"}, 400
