@@ -14,28 +14,28 @@ with open(MODEL_PATH, 'rb') as file:
 app = Flask(__name__)
 CORS(app)
 
-COLUMNS = [
-    "gender",
-    "hypertension",
-    "heart_disease",
-    "ever_married",
-    "Residence_type",
-    "avg_glucose_level",
-    "bmi",
-    "AgeCategory_0-9",
-    "AgeCategory_10-19",
-    "AgeCategory_20-24",
-    "AgeCategory_25-59",
-    "AgeCategory_60 or older",
-    "Never smoked",
-    "smokes",
-    "Former smoker",
-    "work_type_private",
-    "work_type_self_employed",
-    "work_type_govt",
-    "work_type_children",
-    "work_type_unemployed"
-]
+# COLUMNS = [
+#     "gender",
+#     "hypertension",
+#     "heart_disease",
+#     "ever_married",
+#     "Residence_type",
+#     "avg_glucose_level",
+#     "bmi",
+#     "AgeCategory_0-9",
+#     "AgeCategory_10-19",
+#     "AgeCategory_20-24",
+#     "AgeCategory_25-59",
+#     "AgeCategory_60 or older",
+#     "Never smoked",
+#     "smokes",
+#     "Former smoker",
+#     "work_type_private",
+#     "work_type_self_employed",
+#     "work_type_govt",
+#     "work_type_children",
+#     "work_type_unemployed"
+# ]
 
 
 
@@ -51,40 +51,40 @@ def predict_disease_stroke(data):
         features = []
 
         # Gender
-        features.append(1 if data.get("gender") == "Male" else 0)
+        features.append(1 if data.get("Gender") == "Male" else 0)
 
         # Hypertension
-        features.append(1 if data.get("hypertension") == "Yes" else 0)
+        features.append(1 if data.get("Hypertension") == "Yes" else 0)
 
         # Heart Disease
-        features.append(1 if data.get("heart_disease") == "Yes" else 0)
+        features.append(1 if data.get("HeartDisease") == "Yes" else 0)
 
         # Ever Married
-        features.append(1 if data.get("ever_married") == "Yes" else 0)
+        features.append(1 if data.get("EverMarried") == "Yes" else 0)
 
         # Residence Type
-        features.append(1 if data.get("Residence_type") == "Urban" else 0)
+        features.append(1 if data.get("ResidenceType") == "Urban" else 0)
 
         # Average Glucose Level
-        features.append(float(data.get("avg_glucose_level")))
+        features.append(float(data.get("blood_glucose_level")))
 
         # BMI
-        features.append(float(data.get("bmi")))
+        features.append(float(data.get("BMI")))
 
         # Age Category (One-Hot Encoding)
-        age_category = data.get("age_category")
+        age_category = data.get("AgeCategory")
         age_categories = ["0-9", "10-19", "20-24", "25-59", "60 or older"]
         for category in age_categories:
             features.append(1 if age_category == category else 0)
 
         # Smoking Status (One-Hot Encoding)
-        smoking_status = data.get("smokerStatus")
+        smoking_status = data.get("SmokerStatus")
         smoking_categories = ["Never smoked", "smokes", "Former smoker"]
         for category in smoking_categories:
             features.append(1 if smoking_status == category else 0)
 
         # Work Type (One-Hot Encoding)
-        work_type = data.get("work_type")
+        work_type = data.get("WorkType")
         work_categories = [
             "Private",
             "Self-employed",
