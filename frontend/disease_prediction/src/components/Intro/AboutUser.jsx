@@ -4,7 +4,8 @@ const AboutUser = () => {
     const navigate = useNavigate()
 
 
-    const onSubmit = () => {
+    const onSubmit = () => 
+        {
         navigate("/dashboard")
     }
 
