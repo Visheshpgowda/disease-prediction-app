@@ -7,7 +7,17 @@ from utils.diabetes_util import predict_disease_diabetes
 from utils.stroke_util import predict_disease_stroke
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "http://localhost:5173",  # Vite dev server
+            "http://localhost:3000",
+            "https://disease-prediction-app.vercel.app/"  # Replace with your actual frontend domain
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 @app.route('/')
 def home():

@@ -7,8 +7,5 @@
     "routes": [{
         "src": "/(.*)",
         "dest": "main.py"
-    }],
-    "env": {
-        "FLASK_ENV": "production"
-    }
+    }]
 }
