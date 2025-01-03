@@ -1,75 +1,112 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_BASE_URL = ' http://127.0.0.1:5000';
+const API_BASE_URL = 'http://127.0.0.1:5000';
 
 const Predict = () => {
-    const [step, setStep] = useState(1);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [formData, setFormData] = useState({});
-    const [errors, setErrors] = useState({});
+    const [tempInput, setTempInput] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [predictions, setPredictions] = useState({});
     const [currentPrediction, setCurrentPrediction] = useState('');
+    const [error, setError] = useState('');
 
-    const formFields = {
-        1: [
-            { name: "Gender", label: "Gender", type: "select", options: ["Male", "Female"] },
-            { name: "HeartDisease", label: "Heart Disease History", type: "select", options: ["Yes", "No"] },
-            { name: "Hypertension", label: "Hypertension", type: "select", options: ["Yes", "No"] },
-            { name: "AgeCategory", label: "Age Category", type: "select", 
-              options: ["0-9", "10-19", "20-24", "25-59", "60 or older"] },
-            { name: "Ethnicity", label: "Ethnicity", type: "select",
-              options: ["Caucasian", "African American", "Asian", "Other"] },
-            { name: "GeneralHealth", label: "General Health", type: "select", 
-              options: ["Excellent", "Fair", "Good", "Poor", "Very good"] }
-        ],
-        2: [
-            { name: "WeightInKilograms", label: "Weight (kg)", type: "number" },
-            { name: "HeightInMeters", label: "Height (m)", type: "number" },
-            { name: "HeighInFeet", label: "Height (ft)", type: "number" },
-            { name: "BMI", label: "BMI", type: "number" },
-            { name: "blood_glucose_level", label: "Blood Glucose Level", type: "number" },
-            { name: "HbA1c_level", label: "HbA1c Level", type: "number" }
-        ],
-        3: [
-            { name: "SmokerStatus", label: "Smoking Status", type: "select", 
-              options: ["Never smoked", "smokes", "Former smoker"] },
-            { name: "AlcoholConsumption", label: "Alcohol Consumption", type: "select", options: ["Yes", "No"] },
-            { name: "AlcoholDrinkers", label: "Regular Alcohol Drinker", type: "select", options: ["Yes", "No"] },
-            { name: "PhysicalActivity", label: "Physical Activity (hours/week)", type: "number" },
-            { name: "SleepHours", label: "Sleep Hours (per night)", type: "number" }
-        ],
-        4: [
-            { name: "ChestPain", label: "Chest Pain", type: "select", options: ["Yes", "No"] },
-            { name: "Breathlessness", label: "Breathlessness", type: "select", options: ["Yes", "No"] },
-            { name: "Fatigue", label: "Fatigue", type: "select", options: ["Yes", "No"] },
-            { name: "StressLevel", label: "Stress Level", type: "select", options: ["Low", "Medium", "High"] }
-        ],
-        5: [
-            { name: "HadAngina", label: "History of Angina", type: "select", options: ["Yes", "No"] },
-            { name: "HadCOPD", label: "History of COPD", type: "select", options: ["Yes", "No"] },
-            { name: "HadKidneyDisease", label: "History of Kidney Disease", type: "select", options: ["Yes", "No"] },
-            { name: "DifficultyConcentrating", label: "Difficulty Concentrating", type: "select", options: ["Yes", "No"] },
-            { name: "DifficultyWalking", label: "Difficulty Walking", type: "select", options: ["Yes", "No"] }
-        ],
-        6: [
-            { name: "ChestScan", label: "Had Chest Scan", type: "select", options: ["Yes", "No"] },
-            { name: "CovidPos", label: "COVID-19 Positive History", type: "select", options: ["Yes", "No"] }
-        ]
+    const allQuestions = [
+        // Personal Information
+        { name: "Gender", label: "What is your gender?", type: "select", options: ["Male", "Female"] },
+        { name: "AgeCategory", label: "Which age group do you belong to?", type: "select", 
+          options: ["0-9", "10-19", "20-24", "25-59", "60 or older"] },
+        { name: "Ethnicity", label: "What is your ethnicity?", type: "select",
+          options: ["Caucasian", "African American", "Asian", "Other"] },
+        
+        // Health Basics
+        { name: "GeneralHealth", label: "How would you rate your general health?", type: "select", 
+          options: ["Excellent", "Very good", "Good", "Fair", "Poor"] },
+        { name: "WeightInKilograms", label: "What is your weight in kilograms?", type: "number", min: 0, max: 300 },
+        { name: "HeightInMeters", label: "What is your height in meters?", type: "number", min: 0, max: 3 },
+        { name: "HeighInFeet", label: "What is your height in feet?", type: "number", min: 0, max: 10 }, 
+        
+        // Medical History
+        { name: "HeartDisease", label: "Have you ever been diagnosed with heart disease?", type: "select", options: ["Yes", "No"] },
+        { name: "Hypertension", label: "Do you have hypertension?", type: "select", options: ["Yes", "No"] },
+        { name: "HadAngina", label: "Have you ever experienced angina?", type: "select", options: ["Yes", "No"] },
+        { name: "HadCOPD", label: "Have you been diagnosed with COPD?", type: "select", options: ["Yes", "No"] },
+        { name: "HadKidneyDisease", label: "Do you have any kidney disease?", type: "select", options: ["Yes", "No"] },
+        
+        // Lifestyle
+        { name: "SmokerStatus", label: "What is your smoking status?", type: "select", 
+          options: ["Never smoked", "Former smoker", "smokes"] },
+        { name: "AlcoholConsumption", label: "Do you consume alcohol?", type: "select", options: ["Yes", "No"] },
+        { name: "AlcoholDrinkers", label: "Are you a regular alcohol drinker?", type: "select", options: ["Yes", "No"] },
+        { name: "PhysicalActivity", label: "How many hours per week do you engage in physical activity?", type: "number", min: 0, max: 168 },
+        { name: "SleepHours", label: "How many hours do you sleep per night on average?", type: "number", min: 0, max: 24 },
+        
+        // Current Symptoms
+        { name: "ChestPain", label: "Are you experiencing any chest pain?", type: "select", options: ["Yes", "No"] },
+        { name: "Breathlessness", label: "Do you experience breathlessness?", type: "select", options: ["Yes", "No"] },
+        { name: "Fatigue", label: "Do you often feel fatigued?", type: "select", options: ["Yes", "No"] },
+        { name: "StressLevel", label: "How would you rate your stress level?", type: "select", options: ["Low", "Medium", "High"] },
+        { name: "DifficultyConcentrating", label: "Do you have difficulty concentrating?", type: "select", options: ["Yes", "No"] },
+        { name: "DifficultyWalking", label: "Do you have difficulty walking?", type: "select", options: ["Yes", "No"] },
+        
+        // Medical Tests
+        { name: "blood_glucose_level", label: "What is your blood glucose level?", type: "number", min: 0, max: 1000 },
+        { name: "HbA1c_level", label: "What is your HbA1c level?", type: "number", min: 0, max: 20 },
+        { name: "ChestScan", label: "Have you had a chest scan recently?", type: "select", options: ["Yes", "No"] },
+        { name: "CovidPos", label: "Have you ever tested positive for COVID-19?", type: "select", options: ["Yes", "No"] }
+    ];
+
+    const validateNumber = (value, min, max) => {
+        const num = parseFloat(value);
+        if (isNaN(num)) return "Please enter a valid number";
+        if (num < min) return `Value must be at least ${min}`;
+        if (num > max) return `Value must be less than ${max}`;
+        return "";
     };
 
-    const totalSteps = Object.keys(formFields).length;
+    const handleInputChange = (value, isSelect = false) => {
+        setError('');
+        const currentQuestion = allQuestions[currentQuestionIndex];
+        
+        if (isSelect) {
+            // For select inputs, update and move to next question
+            let updatedFormData = {
+                ...formData,
+                [currentQuestion.name]: value
+            };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
+            setFormData(updatedFormData);
+            if (currentQuestionIndex < allQuestions.length - 1) {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            }
+        } else {
+            // For number inputs, just update the temporary input
+            setTempInput(value);
+        }
+    };
+
+    const handleNumberSubmit = () => {
+        const currentQuestion = allQuestions[currentQuestionIndex];
+        const validationError = validateNumber(tempInput, currentQuestion.min, currentQuestion.max);
+        
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+
         let updatedFormData = {
             ...formData,
-            [name]: value
-        };
+            [currentQuestion.name]: parseFloat(tempInput)
+        }; 
 
-        if (name === "WeightInKilograms" || name === "HeightInMeters") {
-            const weight = name === "WeightInKilograms" ? Number(value) : Number(formData.WeightInKilograms);
-            const height = name === "HeightInMeters" ? Number(value) : Number(formData.HeightInMeters);
+        // Calculate BMI if we have both height and weight
+        if (currentQuestion.name === "WeightInKilograms" || 
+            currentQuestion.name === "HeightInMeters" || 
+            currentQuestion.name === "HeightInFeet") {
+            
+            const weight = updatedFormData.WeightInKilograms;
+            const height = updatedFormData.HeightInMeters;
             
             if (weight && height) {
                 updatedFormData.BMI = (weight / (height * height)).toFixed(2);
@@ -77,35 +114,9 @@ const Predict = () => {
         }
 
         setFormData(updatedFormData);
-        setErrors({
-            ...errors,
-            [name]: ""
-        });
-    };
-
-    const validateFields = () => {
-        const currentFields = formFields[step];
-        const newErrors = {};
-
-        currentFields.forEach((field) => {
-            if (!formData[field.name]) {
-                newErrors[field.name] = ${field.label} is required.;
-            }
-        });
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const nextStep = () => {
-        if (validateFields()) {
-            setStep(step + 1);
-        }
-    };
-
-    const prevStep = () => {
-        if (step > 1) {
-            setStep(step - 1);
+        setTempInput('');
+        if (currentQuestionIndex < allQuestions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
     };
 
@@ -117,10 +128,10 @@ const Predict = () => {
             'Stroke': '/strokepredict',
             'Asthma': '/asthmapredict'
         }[disease];
-
+        console.log(formData);
+        
         try {
-            console.log(formData)
-            const response = await axios.post(${API_BASE_URL}${endpoint}, formData);
+            const response = await axios.post(`${API_BASE_URL}${endpoint}`, formData);
             setPredictions(prev => ({
                 ...prev,
                 [disease]: {
@@ -129,7 +140,7 @@ const Predict = () => {
                 }
             }));
         } catch (error) {
-            console.error(Error predicting ${disease}:, error);
+            console.error(`Error predicting ${disease}:`, error);
             setPredictions(prev => ({
                 ...prev,
                 [disease]: {
@@ -141,18 +152,18 @@ const Predict = () => {
     };
 
     const handleSubmit = async () => {
-        if (validateFields()) {
-            setIsSubmitting(true);
-            
-            const diseases = ['Heart Disease', 'Diabetes', 'Stroke', 'Asthma'];
-            
-            for (const disease of diseases) {
-                await predictDisease(disease);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-            
-            setIsSubmitting(false);
+        if (currentQuestion.type === 'number' && tempInput) {
+            handleNumberSubmit();
         }
+        setIsSubmitting(true);
+        const diseases = ['Heart Disease', 'Diabetes', 'Stroke', 'Asthma'];
+        
+        for (const disease of diseases) {
+            await predictDisease(disease);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        setIsSubmitting(false);
     };
 
     if (isSubmitting) {
@@ -191,7 +202,7 @@ const Predict = () => {
                     <h2 className="card-title text-2xl mb-6">Prediction Results</h2>
                     <div className="grid gap-4 md:grid-cols-2">
                         {Object.entries(predictions).map(([disease, result]) => (
-                            <div key={disease} className={alert ${result.prediction === "Positive" ? "alert-error" : "alert-success"}}>
+                            <div key={disease} className={`alert ${result.prediction === "Positive" ? "alert-error" : "alert-success"}`}>
                                 <div>
                                     <h3 className="font-bold">{disease}</h3>
                                     {result.error ? (
@@ -214,8 +225,10 @@ const Predict = () => {
                         onClick={() => {
                             setIsSubmitting(false);
                             setPredictions({});
-                            setStep(1);
+                            setCurrentQuestionIndex(0);
                             setFormData({});
+                            setTempInput('');
+                            setError('');
                         }}
                         className="btn btn-primary mt-6 w-full"
                     >
@@ -226,86 +239,86 @@ const Predict = () => {
         );
     }
 
+    const currentQuestion = allQuestions[currentQuestionIndex];
+    const progress = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
+
     return (
         <div className="card w-full bg-base-100 shadow-xl">
             <div className="card-body">
-                <ul className="steps steps-horizontal w-full mb-8">
-                    {Array.from({ length: totalSteps }).map((_, idx) => (
-                        <li
-                            key={idx}
-                            className={step ${idx + 1 <= step ? 'step-primary' : ''}}
-                        >
-                            Step {idx + 1}
-                        </li>
-                    ))}
-                </ul>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div 
+                        className="bg-primary h-2.5 rounded-full transition-all duration-500" 
+                        style={{ width: `${progress}%` }}
+                    ></div>
+                </div>
+                
+                <p className="text-sm text-gray-500 mb-8">
+                    Question {currentQuestionIndex + 1} of {allQuestions.length}
+                </p>
 
-                <h2 className="card-title text-2xl mb-6">Step {step}</h2>
+                <h2 className="text-2xl font-bold mb-6">{currentQuestion.label}</h2>
 
                 <div className="space-y-4">
-                    {formFields[step].map((field) => (
-                        <div key={field.name} className="form-control w-full">
-                            <label className="label">
-                                <span className="label-text">{field.label}</span>
-                            </label>
-                            {field.type === 'select' ? (
-                                <select
-                                    name={field.name}
-                                    onChange={handleInputChange}
-                                    value={formData[field.name] || ''}
-                                    className="select select-bordered w-full"
+                    {currentQuestion.type === 'select' ? (
+                        <div className="grid gap-3">
+                            {currentQuestion.options.map((option) => (
+                                <button
+                                    key={option}
+                                    className={`btn btn-lg ${formData[currentQuestion.name] === option ? 'btn-primary' : 'btn-outline'}`}
+                                    onClick={() => handleInputChange(option, true)}
                                 >
-                                    <option value="">Select {field.label}</option>
-                                    {field.options.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <input
-                                    type={field.type}
-                                    name={field.name}
-                                    onChange={handleInputChange}
-                                    value={formData[field.name] || ''}
-                                    className="input input-bordered w-full"
-                                    placeholder={Enter ${field.label}}
-                                    step="any"
-                                />
-                            )}
-                            {errors[field.name] && (
-                                <label className="label">
-                                    <span className="label-text-alt text-error">{errors[field.name]}</span>
-                                </label>
-                            )}
+                                    {option}
+                                </button>
+                            ))}
                         </div>
-                    ))}
+                    ) : (
+                        <div className="space-y-4">
+                            <input
+                                type="number"
+                                className="input input-bordered w-full text-lg"
+                                placeholder="Enter your answer"
+                                value={tempInput}
+                                onChange={(e) => handleInputChange(e.target.value)}
+                                step="any"
+                                min={currentQuestion.min}
+                                max={currentQuestion.max}
+                            />
+                            {error && (
+                                <p className="text-error text-sm">{error}</p>
+                            )}
+                            <button
+                                onClick={handleNumberSubmit}
+                                className="btn btn-primary w-full"
+                                disabled={!tempInput}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
                 </div>
 
-                <div className="card-actions justify-between mt-6">
+                <div className="flex justify-between mt-8">
                     <button
-                        onClick={prevStep}
-                        disabled={step === 1}
+                        onClick={() => {
+                            setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1));
+                            setTempInput('');
+                            setError('');
+                        }}
                         className="btn btn-outline"
+                        disabled={currentQuestionIndex === 0}
                     >
                         Previous
                     </button>
 
-                    {step === totalSteps ? (
+                    {currentQuestionIndex === allQuestions.length - 1 && 
+                     (currentQuestion.type === 'select' || formData[currentQuestion.name]) ? (
                         <button
                             onClick={handleSubmit}
                             className="btn btn-primary"
                         >
-                            Submit
+                            Get Prediction
                         </button>
-                    ) : (
-                        <button
-                            onClick={nextStep}
-                            className="btn btn-primary"
-                        >
-                            Next
-                        </button>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </div>
