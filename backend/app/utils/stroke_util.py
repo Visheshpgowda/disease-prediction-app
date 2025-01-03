@@ -107,10 +107,10 @@ def predict_disease_stroke(data):
         prediction = model.predict(features)[0]
         probability = model.predict_proba(features)[0][1]
 
-        return jsonify({"prediction": int(prediction), "probability": float(probability)})
+        return {"prediction": int(prediction), "probability": float(probability)}
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return {"error": str(e)}, 500
 
 
 

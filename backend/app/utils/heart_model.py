@@ -81,7 +81,7 @@ def predict_disease_heart(data):
             if col not in data:
                 raise ValueError(f"Missing value for feature: {col}")
             min_val, max_val = SCALES[col]
-            scaled_value = scale_value(data[col], min_val, max_val)
+            scaled_value = scale_value(float(data[col]), min_val, max_val)
             features.append(scaled_value)
 
         
