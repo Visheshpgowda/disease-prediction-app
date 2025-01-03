@@ -27,7 +27,7 @@ feature_order = [
     'ChestScan',
     'AlcoholDrinkers',
     'CovidPos',
-    'HeighInFeet',
+    'HeighInFeet', 
     'GeneralHealth_Excellent',
     'GeneralHealth_Fair',
     'GeneralHealth_Good',
