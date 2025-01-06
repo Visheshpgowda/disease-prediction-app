@@ -73,6 +73,7 @@ def scale_value(value, min_val, max_val):
     return (value - min_val) / (max_val - min_val)
 
 def predict_disease_heart(data):
+    print(data)
     try:
         features = []
 
