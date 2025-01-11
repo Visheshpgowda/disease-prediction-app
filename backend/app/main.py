@@ -12,8 +12,9 @@ CORS(app, resources={
         "origins": [
             "http://localhost:5173",  # Vite dev server
             "http://localhost:3000",
-            "https://disease-prediction-app.vercel.app"  # Replace with your actual frontend domain,
-                "*",
+            "https://disease-prediction-app.vercel.app"  # Replace with your actual frontend domain, 
+            "https://disease-prediction-app-8ff5.vercel.app/",
+            "*"
         ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
