@@ -1,1 +1,0 @@
-# Route to fetch symptom list dynamically (shld check this is required or not)
