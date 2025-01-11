@@ -128,10 +128,18 @@ const Predict = () => {
             'Stroke': '/strokepredict',
             'Asthma': '/asthmapredict'
         }[disease];
-        console.log(formData);
         
         try {
-            const response = await axios.post(`${API_BASE_URL}${endpoint}`, formData);
+            const response = await axios.post(
+                `${API_BASE_URL}${endpoint}`, 
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true
+                }
+            );
             setPredictions(prev => ({
                 ...prev,
                 [disease]: {
@@ -243,7 +251,7 @@ const Predict = () => {
     const progress = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
 
     return (
-        <div className="card w-full bg-base-100 shadow-xl">
+        <div className="card w-full bg-base-100 shadow-xl ">
             <div className="card-body">
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                     <div 
