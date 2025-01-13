@@ -1,8 +1,12 @@
-<img width="1456" alt="Screenshot 2025-01-14 at 1 37 21 AM" src="https://github.com/user-attachments/assets/c2646232-5726-4446-abd1-4bbb039fecb1" /># Chronic Disease Prediction System
+# Chronic Disease Prediction System
 
 This project aims to predict the risk of four significant chronic diseases: asthma, diabetes, stroke, and cardiovascular disease using machine learning techniques. The application leverages ensemble learning models, specifically **XGBoost Classifier (XGBC)** and **Artificial Neural Networks (ANN)**, integrated with a **voting classifier** for improved accuracy.
 
 The web application is built using **React** for the frontend and **Flask** for the backend, and it is fully deployed to provide real-time predictions based on user inputs.
+
+**Website Link**: [Chronic Disease Prediction App](https://disease-prediction-app.vercel.app/)
+
+---
 
 ## Features
 - **Disease Prediction**: Accurately predict risks for asthma, diabetes, stroke, and heart diseases.
@@ -11,24 +15,27 @@ The web application is built using **React** for the frontend and **Flask** for 
 - **API Integration**: Backend APIs to handle predictions and user inputs.
 - **Scalability**: Modular design for adding new models or diseases.
 
+---
+
 ## Screenshot Grid
 
 Below is a grid showcasing the application's interface and key features:
 
-| Home Page                        | Prediction Form                   |
-|----------------------------------|-----------------------------------|
-|<img width="1459" alt="Screenshot 2025-01-14 at 1 37 44 AM" src="https://github.com/user-attachments/assets/07dc7387-a322-44cf-8e86-a76ded9db306" />
- | ![Prediction Form](./images/form.png) |
+| **Home Page**                        | **Prediction Form**                   |
+|--------------------------------------|---------------------------------------|
+| <img width="1459" alt="Home Page" src="https://github.com/user-attachments/assets/07dc7387-a322-44cf-8e86-a76ded9db306" /> | <img width="1470" alt="Prediction Form" src="https://github.com/user-attachments/assets/49136189-914b-4ae9-8382-46883555a9f8" /> |
 
-| Results Page                     | Model Performance                |
-|----------------------------------|-----------------------------------|
-| ![Results Page](./images/results.png) | ![Model Performance](./images/performance.png) |
+| **Results Page**                     | **Flow Diagram of Model**             |
+|--------------------------------------|---------------------------------------|
+| <img width="1469" alt="Results Page" src="https://github.com/user-attachments/assets/245d1e12-d982-40ff-88d0-4062713de5a3" /> | <img width="673" alt="Flow Diagram" src="https://github.com/user-attachments/assets/eac9539d-da6e-46d2-82ab-411385e49a41" /> |
+
+---
 
 ## Technologies Used
 
 ### Frontend:
 - React
-- CSS/Bootstrap for styling
+- TailwindCSS
 
 ### Backend:
 - Flask
@@ -39,43 +46,40 @@ Below is a grid showcasing the application's interface and key features:
 - Artificial Neural Networks (ANN)
 
 ### Deployment:
-- Docker (optional for containerization)
-- Hosting on AWS/GCP/Heroku
+- Frontend: Deployed on **Vercel**
+- Backend: Deployed on **Railway.app**
+
+---
 
 ## How to Run Locally
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/chronic-disease-prediction.git
-   ```
+   git clone https://github.com/Somanath2314/disease-prediction-app.git
 2. Navigate to the project directory:
    ```bash
-   cd chronic-disease-prediction
-   ```
-3. Install dependencies:
-   - Frontend:
-     ```bash
-     cd frontend
-     npm install
-     ```
-   - Backend:
-     ```bash
-     cd backend
-     pip install -r requirements.txt
-     ```
-4. Run the application:
-   - Start the backend server:
-     ```bash
-     python app.py
-     ```
-   - Start the frontend:
-     ```bash
-     npm start
-     ```
-5. Open the application in your browser at `http://localhost:3000`.
+   cd disease-prediction-app
+3. Frontend-
+    ```bash
+    cd frontend/disease_prediction
+    npm install
+4. Backend-
+   ```bash
+   cd backend/app
+   python -m venv venv
+   source venv/bin/activate  # For Windows, use: venv\Scripts\activate
+   pip install -r requirements.txt
+5. Start the backend server:
+   ```bash
+   python main.py
+6. Start the frontend:
+   ```bash
+   npm run dev
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contributing
-We welcome contributions! Please fork the repository and create a pull request for review.
+## Contact
+Created by:
+- Shreyas DK - shreyasdk.is22@bmsce.ac.in
+- Somanath Mikali - somanath.is22@bmsce.ac.in
+- Vishesh P Gowda - vishesh.is22@bmsce.ac.in
+- Uttam Seervi - uttam.is22@bmsce.ac.in
+- Uday CA - udayshankar.is23@bmsce.ac.in
