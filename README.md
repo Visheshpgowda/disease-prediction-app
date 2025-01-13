@@ -25,11 +25,16 @@ Below is a grid showcasing the application's interface and key features:
 |--------------------------------------|---------------------------------------|
 | <img width="1459" alt="Home Page" src="https://github.com/user-attachments/assets/07dc7387-a322-44cf-8e86-a76ded9db306" /> | <img width="1470" alt="Prediction Form" src="https://github.com/user-attachments/assets/49136189-914b-4ae9-8382-46883555a9f8" /> |
 
-| **Results Page**                     | **Flow Diagram of Model**             |
-|--------------------------------------|---------------------------------------|
-| <img width="1469" alt="Results Page" src="https://github.com/user-attachments/assets/245d1e12-d982-40ff-88d0-4062713de5a3" /> | <img width="673" alt="Flow Diagram" src="https://github.com/user-attachments/assets/eac9539d-da6e-46d2-82ab-411385e49a41" /> |
+| **Results Page**                     |
+|--------------------------------------|
+| <img width="1469" alt="Results Page" src="https://github.com/user-attachments/assets/245d1e12-d982-40ff-88d0-4062713de5a3" /> |
+
+| **Flow Diagram of Model**            |
+|--------------------------------------|
+| <img width="673" alt="Flow Diagram" src="https://github.com/user-attachments/assets/eac9539d-da6e-46d2-82ab-411385e49a41" /> |
 
 ---
+
 
 ## Technologies Used
 
