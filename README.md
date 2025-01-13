@@ -15,6 +15,7 @@ The web application is built using **React** for the frontend and **Flask** for 
 - **API Integration**: Backend APIs to handle predictions and user inputs.
 - **Scalability**: Modular design for adding new models or diseases.
 
+
 ---
 
 ## Screenshot Grid
@@ -29,9 +30,9 @@ Below is a grid showcasing the application's interface and key features:
 |--------------------------------------|
 | <img width="1469" alt="Results Page" src="https://github.com/user-attachments/assets/245d1e12-d982-40ff-88d0-4062713de5a3" /> |
 
-<div align="left">
-  <img width="673" alt="Flow Diagram" src="https://github.com/user-attachments/assets/eac9539d-da6e-46d2-82ab-411385e49a41" />
-</div>
+| **Flow Diagram of Model**            |
+|--------------------------------------|
+| <img width="673" alt="Flow Diagram" src="https://github.com/user-attachments/assets/eac9539d-da6e-46d2-82ab-411385e49a41" /> |
 
 ---
 
