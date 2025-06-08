@@ -1,0 +1,3 @@
+node_modules
+disease_prediction_app/build
+.env
